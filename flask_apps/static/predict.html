@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>cat dog predict</title>
+</head>
+<body>
+	<input id="image-selector" type="file">
+	<button id="predict-button">Predict</button>
+	<p style="Font-weight:bold">Predictions</p>
+	<p>Cat: <span id="cat-prediction"></span></p>
+	<p>Dog: <span id="dog-prediction"></span></p>
+	<img id="selection-image" src=""/>
+	
+	<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+	<script>
+		let base64Image;
+		$("#image-selector").change(function() {
+			let reader = new FileReader();
+			reader.onload = funtion(e) {
+				let dataURL =reader.result;
+				$('#selected-image').attr("src", dataURL);
+				console.log(base64Image);
+			}
+			reader.readAsDataURL($("#image-selector")[0].files[0]);
+			$("#cat-prediction").text("");
+			$("#dog-prediction").text("");
+		});
+
+		$("#predict-button").click(function(event){
+			let message = {
+				image: base64Image
+			}
+			console.log(message);
+			$.post("http://127.0.0.1:5000/predictimage", JSON.stringify(message), function(response){
+				$("#cat-prediction").text(response.prediction.cat.toFixed(6));
+				$("#dog-prediction").text(response.prediction.dog.toFixed(6));
+				console.log(response);
+			});
+		});
+	</script>	
+</body>
+</html>
